@@ -1,0 +1,35 @@
+
+<table style="width:100%;">
+    <tr>
+        <td style="width:5%">
+            <hr />
+        </td>
+        <td align="center" style="width:90%">
+           Positions
+        </td>
+        <td style="width:5%">
+            <hr />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <input type="button" value="Add" (click)="onPositionAdd()">
+        </td>
+    </tr>
+    <tr>
+        <td align="center" colspan="3">
+            <ag-grid-angular 
+            #positionsGrid
+            class="ag-theme-balham" 
+            style="width: 700px; height: 500px;"
+            [rowData]="rowData" 
+            [columnDefs]="colDefs">
+            </ag-grid-angular>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" align="center">
+            <hr/>
+        </td>
+    </tr>
+</table>
