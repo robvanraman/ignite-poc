@@ -3,6 +3,7 @@ import { AgGridAngular } from 'ag-grid-angular'
 import { ColDef, GridApi } from 'ag-grid-community';
 import { WebsocketService } from '../services/websocket.service';
 
+
 @Component({
   selector: 'app-positions',
   standalone: true,
@@ -19,8 +20,7 @@ export class PositionsComponent implements OnInit{
   colDefs : ColDef[] = [];
 
  ngOnInit() {
-    
-    
+      
   this.rowData = [
     { make: "Tesla", model: "Model Y", price: 64950, electric: true },
     { make: "Ford", model: "F-Series", price: 33850, electric: false },
@@ -39,6 +39,9 @@ export class PositionsComponent implements OnInit{
 
   onPositionAdd() {
 
+
+   
+    
     this.agGrid?.api.applyTransaction({add : [{ make: "Toyota", model: "Corolla", price: 29600, electric: false }, { make: "Toyota", model: "Corolla", price: 29600, electric: false }]});
    // gridApi.updateRowData({ add: { make: "Tesla", model: "Model Y", price: 64950, electric: true }, addIndex: 3});
    // gridApi.applyTrasnsaction({add : [{}]});
