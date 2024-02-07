@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular'
 import { ColDef, GridApi } from 'ag-grid-community';
+import { IgniteWrapperService } from '../services/ignite-wrapper.service';
 import { WebsocketService } from '../services/websocket.service';
 
 
@@ -13,7 +14,7 @@ import { WebsocketService } from '../services/websocket.service';
 })
 export class PositionsComponent implements OnInit{
 
-  constructor(private websocketService: WebsocketService) {}
+  constructor(private websocketService: WebsocketService, private igniteWrapperService : IgniteWrapperService) {}
   
   @ViewChild('positionsGrid') agGrid: AgGridAngular | undefined;
   rowData : any[] = [];
@@ -37,9 +38,10 @@ export class PositionsComponent implements OnInit{
 
   }
 
-  onPositionAdd() {
+  async onPositionAdd() {
 
 
+    await this.igniteWrapperService.connect();
    
     
     this.agGrid?.api.applyTransaction({add : [{ make: "Toyota", model: "Corolla", price: 29600, electric: false }, { make: "Toyota", model: "Corolla", price: 29600, electric: false }]});

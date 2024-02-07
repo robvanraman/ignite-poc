@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+import { IgniteClient, IgniteClientConfiguration } from 'apache-ignite-client';
+
 @Injectable({
   providedIn: 'root'
 })
