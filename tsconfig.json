@@ -22,7 +22,7 @@
         "./types",
         "./node_modules/@types/"
       ],
-      "noImplicitAny": false,
+      //"noImplicitAny": false,
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",

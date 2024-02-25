@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular'
 import { ColDef, GridApi } from 'ag-grid-community';
-import { IgniteWrapperService } from '../services/ignite-wrapper.service';
 import { WebsocketService } from '../services/websocket.service';
 
 
@@ -14,58 +13,82 @@ import { WebsocketService } from '../services/websocket.service';
 })
 export class PositionsComponent implements OnInit{
 
-  constructor(private websocketService: WebsocketService, private igniteWrapperService : IgniteWrapperService) {}
+  constructor(private websocketService: WebsocketService) {
+
+    
+
+  }
   
   @ViewChild('positionsGrid') agGrid: AgGridAngular | undefined;
   rowData : any[] = [];
   colDefs : ColDef[] = [];
+  count : number | undefined;
+  webSocket: WebSocket | undefined;
 
  ngOnInit() {
       
   this.rowData = [
-    { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-    { make: "Ford", model: "F-Series", price: 33850, electric: false },
-    { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+    { cusip: "Tesla", issuer: "Model Y", ticker: "aaa", quantity: 64950, positionId: 100 },
+    { cusip: "Ford", issuer: "F-Series", ticker: "bbb",quantity: 33850, positionId : 101 },
+    { cusip: "Toyota", issuer: "Corolla",ticker: "ccc",  quantity: 29600, positionId: 102 },
   ];
 
   // Column Definitions: Defines & controls grid columns.
   this.colDefs = [
-    { field: "make" },
-    { field: "model" },
-    { field: "price" },
-    { field: "electric" }
+    { field: "positionId" },
+    { field: "cusip" },
+    { field: "issuer" },
+    { field: "ticker" },
+    { field: "quantity" }
   ];
 
   }
 
+  onGridReady(params: any) {
+    console.log('grid ready');
+    console.log(params.api.c);
+  }
+
+  
+  
+
   async onPositionAdd() {
-
-
-    await this.igniteWrapperService.connect();
-   
-    
-    this.agGrid?.api.applyTransaction({add : [{ make: "Toyota", model: "Corolla", price: 29600, electric: false }, { make: "Toyota", model: "Corolla", price: 29600, electric: false }]});
+    this.genericPositionAdd({ cusip : "DAFFFG", issuer: "Toyota", ticker: "Corolla", quantity: 29600, positionId: 200 });
+    this.genericPositionAdd({ cusip : "FFJYUH",issuer: "Tata", ticker: "sAFARI", quantity : 39600, positionId: 201 });
    // gridApi.updateRowData({ add: { make: "Tesla", model: "Model Y", price: 64950, electric: true }, addIndex: 3});
    // gridApi.applyTrasnsaction({add : [{}]});
   //gridApi.updateRowData({ add: { make: "Tesla", model: "Model Y", price: 64950, electric: true }});
   }
 
+  onConnect() {
+    if (this.webSocket == undefined) {
+        this.webSocket = new WebSocket('ws://localhost:6979/position/ws?name=raman');
 
-
-
-  receivedMessages: string[] = [];
-  initWebSocket() {
-    this.websocketService.connect();
-    this.websocketService.messageReceived.subscribe((message: string) => {
-      this.receivedMessages.push(message);
-    });
+            this.webSocket.onopen = (event) => {
+              this.webSocket?.send("cusips")
+            };
+            this.webSocket.onmessage = (event) => {
+              let position = JSON.parse(event.data);
+              this.genericPositionAdd(position)
+            };
+            this.webSocket.onerror = (event) => {
+              console.error(event);
+            };
+    }
+    else {
+      this.webSocket?.send("cusips")
+    }
   }
-  sendMessage(): void {
-    const message = 'Hello, WebSocket!';
-    this.websocketService.sendMessage(message);
-  }
-  closeWebSocket(): void {
-    this.websocketService.closeConnection();
+
+
+  genericPositionAdd(item : {cusip: string, issuer : string, ticker : string, quantity : number, positionId : number}) {
+    this.agGrid?.api.applyTransaction(
+          {
+            add : [item  ]
+          }
+        );
+
+      this.count = this.agGrid?.api.getDisplayedRowCount();
   }
 
 }

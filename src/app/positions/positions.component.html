@@ -5,7 +5,7 @@
             <hr />
         </td>
         <td align="center" style="width:90%">
-           Positions
+           
         </td>
         <td style="width:5%">
             <hr />
@@ -14,14 +14,21 @@
     <tr>
         <td colspan="3">
             <input type="button" value="Add" (click)="onPositionAdd()">
+            <input type="button" value="Connect" (click)="onConnect()">
         </td>
     </tr>
     <tr>
         <td align="center" colspan="3">
+           Positions : {{count}}
+        </td>
+    </tr>
+    <tr>
+        <td align="center" colspan="3" >
             <ag-grid-angular 
             #positionsGrid
             class="ag-theme-balham" 
-            style="width: 700px; height: 500px;"
+            style="width: 1000px; height: 500px;"
+            (onGridReady)="onGridReady"
             [rowData]="rowData" 
             [columnDefs]="colDefs">
             </ag-grid-angular>
